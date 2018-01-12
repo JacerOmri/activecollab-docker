@@ -16,7 +16,7 @@ services:
         image: mysql
         restart: unless-stopped
         environment:
-            - "MYSQL_ROOT_PASSWORD="
+            - MYSQL_ROOT_PASSWORD=youtouchmytralala
         volumes:
           - mysql-data:/var/lib/mysql
     activecollab:
