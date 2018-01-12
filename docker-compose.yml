@@ -1,18 +1,31 @@
-elasticsearch:
-    image: elasticsearch
-    restart: unless-stopped
-mysql:
-    image: mysql
-    restart: unless-stopped
-    environment:
-        - "MYSQL_ROOT_PASSWORD="
-activecollab:
-    build: .
-    links:
-        - elasticsearch
-        - mysql
-    restart: unless-stopped
-    volumes:
-        - "./activecollab:/var/www"
-    ports:
-        - "32922:80"
+version: '3.1'
+
+volumes:
+  elastic-data:
+    external: true
+  mysql-data:
+    external: true
+
+services:
+    elasticsearch:
+        image: elasticsearch
+        restart: unless-stopped
+        volumes:
+          - elastic-data:/usr/share/elasticsearch/data
+    mysql:
+        image: mysql
+        restart: unless-stopped
+        environment:
+            - "MYSQL_ROOT_PASSWORD="
+        volumes:
+          - mysql-data:/var/lib/mysql
+    activecollab:
+        build: .
+        links:
+            - elasticsearch
+            - mysql
+        restart: unless-stopped
+        volumes:
+            - "./activecollab:/var/www"
+        ports:
+            - "32922:80"
