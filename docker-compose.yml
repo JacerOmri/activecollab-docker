@@ -8,7 +8,7 @@ volumes:
 
 services:
     elasticsearch:
-        image: elasticsearch
+        image: elasticsearch:6.5.4
         restart: unless-stopped
         volumes:
           - elastic-data:/usr/share/elasticsearch/data

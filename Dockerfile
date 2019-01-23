@@ -34,30 +34,30 @@ ADD config/default-site /etc/nginx/sites-available/default
 
 # Install PHP
 RUN apt-get install --no-install-recommends -y \
-    php7.0-cli \
-    php7.0-curl \
-    php7.0-fpm \
-    php7.0-gd \
-    php7.0-imap \
-    php7.0-json \
-    php7.0-xml \
-    php7.0-dom \
-    php7.0-mbstring \
-    php7.0-mysqlnd
+    php7.3-cli \
+    php7.3-curl \
+    php7.3-fpm \
+    php7.3-gd \
+    php7.3-imap \
+    php7.3-json \
+    php7.3-xml \
+    php7.3-dom \
+    php7.3-mbstring \
+    php7.3-mysqlnd
 
 # Setup the PHP-FPM daemon.
 RUN mkdir -p /etc/service/php-fpm
-ADD service/php5-fpm.sh /etc/service/php-fpm/run
+ADD service/php-fpm.sh /etc/service/php-fpm/run
 RUN chmod +x /etc/service/php-fpm/run
 
 # Add PHP Configuration
-ADD config/pool-www.conf /etc/php/7.0/fpm/pool.d/www.conf
-ADD config/php.ini /etc/php/7.0/fpm/php.ini
-ADD config/php.ini /etc/php/7.0/cli/php.ini
+ADD config/pool-www.conf /etc/php/7.3/fpm/pool.d/www.conf
+ADD config/php.ini /etc/php/7.3/fpm/php.ini
+ADD config/php.ini /etc/php/7.3/cli/php.ini
 # RUN ln -s /etc/php/7.0/mods-available/imap.ini /etc/php/7.0/cli/conf.d/20-imap.ini \
 #  && ln -s /etc/php/7.0/mods-available/imap.ini /etc/php/7.0/fpm/conf.d/20-imap.ini
 
-RUN service php7.0-fpm start
+RUN service php7.3-fpm start
 
 # Install the CRON tab.
 ADD config/crontab /etc/cron.d/activecollab
