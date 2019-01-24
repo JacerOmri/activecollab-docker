@@ -1,24 +1,24 @@
 version: '3.1'
 
-volumes:
-  elastic-data:
-    external: true
-  mysql-data:
-    external: true
+# volumes:
+#   elastic-data:
+#     external: true
+#   mysql-data:
+#     external: true
 
 services:
-    elasticsearch:
-        image: elasticsearch:6.5.4
-        restart: unless-stopped
-        volumes:
-          - elastic-data:/usr/share/elasticsearch/data
+    # elasticsearch:
+    #     image: elasticsearch:6.5.4
+    #     restart: unless-stopped
+    #     volumes:
+    #       - elastic-data:/usr/share/elasticsearch/data
     mysql:
         image: mysql
-        restart: unless-stopped
+        restart: always
         environment:
             - MYSQL_ROOT_PASSWORD=youtouchmytralala
         volumes:
-          - mysql-data:/var/lib/mysql
+          - "./mysql:/var/lib/mysql"
     activecollab:
         build: .
         links:

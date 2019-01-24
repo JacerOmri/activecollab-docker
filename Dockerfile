@@ -29,8 +29,8 @@ ADD service/nginx.sh /etc/service/nginx/run
 RUN chmod +x /etc/service/nginx/run
 
 # Add Nginx Configuration
-ADD config/nginx.conf /etc/nginx/nginx.conf
-ADD config/default-site /etc/nginx/sites-available/default
+ADD config/working.nginx.conf /etc/nginx/nginx.conf
+ADD config/sites-enabled/activecollab /etc/nginx/sites-available/activecollab
 
 # Install PHP
 RUN apt-get install --no-install-recommends -y \
