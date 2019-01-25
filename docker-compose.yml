@@ -1,23 +1,24 @@
 version: '3.1'
 
 services:
-    # elasticsearch:
-    #     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    #     container_name: elasticsearch
-    #     environment:
-    #         - cluster.name=docker-cluster
-    #         - bootstrap.memory_lock=true
-    #         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    #     ulimits:
-    #         memlock:
-    #             soft: -1
-    #             hard: -1
-    #     volumes:
-    #         - "./elasticsearch:/usr/share/elasticsearch/data"
-    #     ports:
-    #         - 9200:9200
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+        container_name: activecollab-elasticsearch
+        environment:
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - "./elasticsearch:/usr/share/elasticsearch/data"
+        ports:
+            - 9200:9200
     mysql:
         image: mysql
+        container_name: activecollab-mysql
         restart: always
         command: --default-authentication-plugin=mysql_native_password
         environment:
@@ -26,8 +27,10 @@ services:
           - "./mysql:/var/lib/mysql"
     activecollab:
         build: .
+        container_name: activecollab-app
         links:
             - mysql
+            - elasticsearch
         restart: unless-stopped
         volumes:
             - "./activecollab:/var/www"
