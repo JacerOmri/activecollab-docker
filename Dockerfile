@@ -7,16 +7,17 @@ MAINTAINER  Zander Baldwin <hello@zanderbaldwin.com>
 VOLUME      /var/www
 WORKDIR     /var/www
 EXPOSE      80
+
 # Ensure UTF-8
 RUN locale-gen en_US.UTF-8
 ENV LANG       en_US.UTF-8
 ENV LC_ALL     en_US.UTF-8
+
 # Don't forget to use the custom init system provided by phusion/baseimage.
 CMD         ["/sbin/my_init"]
 
 # Upgrade the Operating System.
-RUN apt-get update \
- && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
+RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
 RUN add-apt-repository -y ppa:ondrej/php && apt-get update
 
@@ -27,10 +28,6 @@ RUN apt-get install --no-install-recommends -y nginx
 RUN mkdir -p /etc/service/nginx
 ADD service/nginx.sh /etc/service/nginx/run
 RUN chmod +x /etc/service/nginx/run
-
-# Add Nginx Configuration
-ADD config/nginx.conf /etc/nginx/nginx.conf
-ADD config/sites-enabled/activecollab /etc/nginx/sites-enabled/activecollab
 
 # Install PHP
 RUN apt-get install --no-install-recommends -y \
@@ -66,3 +63,6 @@ RUN chmod 0644 /etc/cron.d/activecollab
 # Clean up APT when done.
 RUN apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Start nginx
+RUN service nginx start

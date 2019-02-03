@@ -1,30 +1,66 @@
-version: '3.1'
+version: "2"
+
+networks:
+  reverse-proxy:
+    external: true
+
+volumes:
+  esdata:
+    driver: local
 
 services:
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-        container_name: activecollab-elasticsearch
-        volumes:
-            - "./elasticsearch:/usr/share/elasticsearch/data"
-        ports:
-            - 9200:9200
+    # elasticsearch:
+    #     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    #     container_name: activecollab-ellasticsearch
+    #     networks:
+    #         - reverse-proxy
+    #     environment:
+    #         - http.host=0.0.0.0
+    #         - transport.host=0.0.0.0
+    #         - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    #     volumes:
+    #         - esdata:/usr/share/elasticsearch/data
+    #         - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    #     ports:
+    #         - 9200:9200
+    #         - 9300:9300
+    #     ulimits:
+    #         memlock:
+    #             soft: -1
+    #             hard: -1
+    #         nofile:
+    #             soft: 65536
+    #             hard: 65536
+    #     cap_add:
+    #         - IPC_LOCK
+
     mysql:
         image: mysql
         container_name: activecollab-mysql
         restart: always
         command: --default-authentication-plugin=mysql_native_password
+        networks:
+            reverse-proxy:
+              aliases:
+                - collab.db
         environment:
             - MYSQL_ROOT_PASSWORD=youtouchmytralala
         volumes:
           - "./mysql:/var/lib/mysql"
+
     activecollab:
         build: .
         container_name: activecollab-app
         links:
             - mysql
-            - elasticsearch
-        restart: unless-stopped
+            # - elasticsearch
+        restart: always
+        networks:
+            reverse-proxy:
+                aliases:
+                  - collab.app
         volumes:
             - "./activecollab:/var/www"
+            - "./nginx:/etc/nginx"
         ports:
             - "8082:80"
